@@ -16,11 +16,14 @@
    <div class="container text-center">
        <div class="row align-items-center">
            <div class="col">
-               <input type="hidden" name="followinp">
-               <button name="follow" class="btn mb-2 
-               btn-outline-dark">Follow</button>
-               <button name="follow" class="btn mb-2 
-               btn-outline-danger">unfollow</button>
+                {% if follow_status %}
+                <a name="unfollow" href="{% url 'follow' user.username 0 %}" class="btn mb-2 
+                btn-outline-danger">Unfollow</a>
+                {% else %}
+                <a name="follow" class="btn mb-2 
+                btn-outline-dark" href="{% url 'follow' user.username 1 %}" >Follow</a>
+                {% endif %}
+             
            </div>   
         </div>
     </div>

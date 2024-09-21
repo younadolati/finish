@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body class="grey">
+    <div class="">
+        <div class="row" style="background-image: url({{room.room_image.url}});background-repeat: no-repeat;background-attachment:fixed;">
+            <div class="col s12 m3">
+                <h2>Room : </h2><span style="color: rgb(207, 136, 29);"> {{room}}</span>
+            </div>
+            <div class="col s12 m3">
+                <h2>Admin : </h2><span style="color: rgb(207, 136, 29);">{{room.admin}}</span>  
+            </div>
+            <div class="col s12 m3">
+                <h2>Room Desc : </h2><span style="color: rgb(207, 136, 29);">{{room.desc}}</span>
+            </div>    
+            <div class="col s12 m3">
+                <h2>Members : <span style="color: rgb(207, 136, 29);" >{{members}}</span></h2>
+            </div>
+        </div>
+    </div>
+
+
+
+	<div class="chat__item__container" id="id_chat_item_container" style="font-size: 20px"></div>
+    <span id="username"></span>
+	
+		
+<br>
+<br>
+<br>
+    <input type="text" id="id_message_send_input" />
+    <button type="submit" id="id_message_send_button" class="btn">Send Message</button>
+
+    <br>
+    <br>
+    {% for message in messages %}
+
+    <div><p>{{message.message}}</p><p>{{message.user.username}}</p></div>
+
+    {% endfor %}
+
+
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    {{room.roomname|json_script:"roomname"}}
+    <script type="text/javascript">
+        const roomName=JSON.parse(document.getElementById("roomname").textContent);
+        let url=`ws://${window.location.host}/ws/${roomName}/`
+        var chatSocket = new WebSocket(url);
+        chatSocket.onopen = function (e) {
+            console.log("The connection was setup successfully !");
+        };
+        chatSocket.onclose = function (e) {
+            console.log("Something unexpected happened !");
+        };
+        document.querySelector("#id_message_send_input").focus();
+        document.querySelector("#id_message_send_input").onkeyup = function (e) {
+            if (e.keyCode == 13) {
+            document.querySelector("#id_message_send_button").click();
+            }
+        };
+        document.querySelector("#id_message_send_button").onclick = function (e) {
+            var messageInput = document.querySelector(
+            "#id_message_send_input"
+            ).value;
+            chatSocket.send(JSON.stringify({ 'message': messageInput,'roomname':roomName,'username':`{{request.user.username}}`}));
+        };
+        chatSocket.onmessage = function (e) {
+            var data = JSON.parse(e.data);
+            var div = document.createElement("div");
+            console.log(data);
+            div.innerHTML =data.message;
+            document.querySelector("#id_message_send_input").value = "";
+            document.querySelector("#username").innerHTML=data.username;
+
+
+            document.querySelector("#id_chat_item_container").appendChild(div);
+
+        };
+    </script>
+
+
+</body>
+</html>

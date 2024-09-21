@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,8 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "csp",
+    'channels',
     'accounts',
+
 ]
+
+ASGI_APPLICATION='finish.asgi.application'
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,7 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # "csp.middleware.CSPMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]
 
 ROOT_URLCONF = 'finish.urls'
@@ -72,7 +79,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'finish.wsgi.application'
+# WSGI_APPLICATION = 'finish.wsgi.application'
 
 
 # Database
@@ -132,8 +139,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Content Security Policy
 
-# CSP_IMG_SRC = ("'self'")
+CSP_IMG_SRC = ("'self'")
 
-# CSP_STYLE_SRC = ("'self'","'unsafe-inline'")
+CSP_STYLE_SRC = ("'self'","'unsafe-inline'",'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css')
 
-# CSP_SCRIPT_SRC = ("'self'","'unsafe-inline'")
+CSP_SCRIPT_SRC = ("'self'","'unsafe-inline'",'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
